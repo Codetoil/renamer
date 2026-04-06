@@ -1,7 +1,5 @@
-import net.minecraftforge.renamer.gradle.RenameJar
-
 plugins {
-    id 'java'
+    id 'application'
     id 'idea'
     id 'eclipse'
     id 'maven-publish'
@@ -14,11 +12,17 @@ version = '0.0'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 java.withSourcesJar();
 
+application {
+    mainClass = "net.minecraftforge.renamer.gradle.demo.TestClass"
+}
+
 repositories {
 	mavenCentral()
 	maven { url = 'https://maven.minecraftforge.net/' }
 	// Needed for JEI
     maven { url = "https://maven.blamejared.com/" }
+    // Needed for GeckoLib
+    maven {url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/"}
 }
 
 renamer.enableMixinRefmaps {
@@ -36,6 +40,12 @@ dependencies {
     	map = files('libs/mappings_official-1.20.1-20230612.114412-map2srg.tsrg.gz')
     	reverse = true // We want SRG -> Mapped, We could do this using renamer.convert, but this is a shorthand
     	naiveSrg = true // JEI doesn't provide all of its dependencies, specifically SRG named Minecraft, so we need to naive SRG text replacement
+    }
+
+    implementation renamer.dependency("software.bernie.geckolib:geckolib-forge-1.20.1:4.8.3") {
+        map = files('libs/mappings_official-1.20.1-20230612.114412-map2srg.tsrg.gz')
+        reverse = true // We want SRG -> Mapped, We could do this using renamer.convert, but this is a shorthand
+        naiveSrg = true // JEI doesn't provide all of its dependencies, specifically SRG named Minecraft, so we need to naive SRG text replacement
     }
 
     implementation renamer.dependency('net.minecraftforge:srgutils:0.6.0') {
